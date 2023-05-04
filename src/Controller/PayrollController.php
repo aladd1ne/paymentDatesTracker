@@ -15,20 +15,23 @@ class PayrollController extends AbstractFOSRestController
     {
     }
 
-    #[Rest\Post('/payroll', name: 'get_payroll')]
-    #[OA\Response(response: 200, description: 'generate a CSV file containing the payment date')]
+    #[Rest\Get('/payroll', name: 'get_payroll')]
+    #[OA\Response(response: 200, description: 'get payment date')]
     public function generatePayments(): Response
     {
-        $now = new \DateTimeImmutable();
-        $year = $now->format('Y');
-        $paymentDates = [];
+        $paymentDates = $this->payrollService->generatePaymentDates();
 
-        for ($month = 1; $month <= 12; $month++) {
-            $monthName = date('F', mktime(0, 0, 0, $month, 1));
-            $baseSalaryDate = $this->payrollService->getBaseSalaryDate($year, $month);
-            $bonusDate = $this->payrollService->getBonusDate($year, $month);
-            $paymentDates[] = [$monthName, $baseSalaryDate, $bonusDate];
-        }
+        return $this->render('payroll/index.html.twig', [
+            'paymentDates' => $paymentDates,
+        ]);
+
+    }
+
+    #[Rest\Post('/generate-payroll', name: 'generate_payroll')]
+    #[OA\Response(response: 200, description: 'generate a CSV file containing the payment date')]
+    public function downloadPaymentsCsv(): Response
+    {
+        $paymentDates = $this->payrollService->generatePaymentDates();
 
         $response = new Response();
         $response->headers->set('Content-Type', 'text/csv');

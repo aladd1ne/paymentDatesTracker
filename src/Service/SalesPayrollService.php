@@ -7,11 +7,29 @@ namespace App\Service;
 class SalesPayrollService
 {
     /**
+     * @return array
+     */
+    public function generatePaymentDates(): array
+    {
+        $now = new \DateTimeImmutable();
+        $year = $now->format('Y');
+        $paymentDates = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $monthName = date('F', mktime(0, 0, 0, $month, 1));
+            $baseSalaryDate = $this->getBaseSalaryDate($year, $month);
+            $bonusDate = $this->getBonusDate($year, $month);
+            $paymentDates[] = [$monthName, $baseSalaryDate, $bonusDate];
+        }
+        return $paymentDates;
+    }
+
+    /**
      * @param $year
      * @param $month
      * @return string
      */
-    public function getBaseSalaryDate($year, $month): string
+    private function getBaseSalaryDate($year, $month): string
     {
         $lastDayOfMonth = new \DateTimeImmutable("last day of $year-$month");
 
@@ -28,7 +46,7 @@ class SalesPayrollService
      * @param $month
      * @return string
      */
-    public function getBonusDate($year, $month): string
+    private function getBonusDate($year, $month): string
     {
         $bonusDate = new \DateTimeImmutable("$year-$month-15");
 
