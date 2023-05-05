@@ -5,6 +5,7 @@ namespace App\Command;
 use App\Service\SalesPayrollService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,13 +23,14 @@ class GeneratePaymentsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setHelp('This command allows you to generate a CSV file containing the payment dates for the sales department.');
+            ->setHelp('This command allows you to generate a CSV file containing the payment dates for the sales department.')
+            ->addArgument('year', InputArgument::OPTIONAL, 'The year for which to generate payment dates.', (new \DateTimeImmutable())->format('Y'));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $now = new \DateTimeImmutable();
-        $year = $now->format('Y');
+        $year = $input->getArgument('year') ?? $now->format('Y');
 
         $paymentDates = [];
 
