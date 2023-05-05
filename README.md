@@ -15,7 +15,10 @@ Php 8.1
     cd paymentDatesTracker
     git checkout feature/generate-payments-command 
     ```
-### Step #1 Run composer install to install the dependencies
+### Step
+Run composer install to install the dependencies
+
+Run symfony serve -d
 ### Usage
 
 ```
