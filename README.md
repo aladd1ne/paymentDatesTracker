@@ -25,7 +25,7 @@ Run symfony serve -d
 ```
 Navigate to 
 
-http://127.0.0.1:8000/payroll
+{{symfony-server-base-url}}/payroll
 click downolad csv
 
 ```
